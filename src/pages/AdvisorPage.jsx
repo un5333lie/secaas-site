@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import SEO from '../components/SEO'
 import { Brain, ArrowRight, Check, DollarSign, Clock, MessageSquare, FileText, BarChart3, Shield } from 'lucide-react'
 
 const fadeIn = {
@@ -76,7 +77,9 @@ const useCases = [
 
 export default function AdvisorPage() {
   return (
-    <div className="pt-32 pb-24">
+    <>
+      <SEO title="SeelieSec Advisor" description="AI-powered virtual CISO. 24/7 security guidance, compliance monitoring, risk assessment, and board-ready reporting at a fraction of traditional costs." path="/advisor" />
+      <div className="pt-32 pb-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         {/* Hero */}
         <motion.div initial="hidden" animate="visible" variants={stagger}>
@@ -216,5 +219,6 @@ export default function AdvisorPage() {
         </motion.div>
       </div>
     </div>
+    </>
   )
 }

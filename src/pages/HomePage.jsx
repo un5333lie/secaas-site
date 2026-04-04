@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import SEO from '../components/SEO'
 import {
   Shield, Zap, Eye, Lock, ArrowRight, Server, Brain,
   AlertTriangle, CheckCircle2, Sparkles, Building2, Castle,
@@ -100,7 +101,9 @@ const trustSignals = [
 
 export default function HomePage() {
   return (
-    <div>
+    <>
+      <SEO path="/" />
+      <div>
       {/* ============================================================ */}
       {/* HERO */}
       {/* ============================================================ */}
@@ -457,5 +460,6 @@ export default function HomePage() {
         </div>
       </section>
     </div>
+    </>
   )
 }

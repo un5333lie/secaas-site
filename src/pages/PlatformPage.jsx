@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import SEO from '../components/SEO'
 import {
   ArrowRight, Shield, Network, Fingerprint, Code, BarChart3,
   Server, Database, Cloud, Bot, Lock, Eye, Cpu
@@ -93,7 +94,9 @@ const architectureFeatures = [
 
 export default function PlatformPage() {
   return (
-    <div className="pt-32 pb-24">
+    <>
+      <SEO title="Platform Architecture" description="Five-layer security architecture with 42 open-source tools. SIEM, EDR, threat intelligence, network security, and compliance scanning." path="/platform" />
+      <div className="pt-32 pb-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         {/* Header */}
         <motion.div initial="hidden" animate="visible" variants={fadeIn}>
@@ -196,5 +199,6 @@ export default function PlatformPage() {
         </motion.div>
       </div>
     </div>
+    </>
   )
 }

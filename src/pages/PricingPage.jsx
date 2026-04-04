@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import SEO from '../components/SEO'
 import {
   Check, ArrowRight, Sparkles, Building2, Castle,
   Shield, Eye, Server, Brain, ChevronDown, ChevronUp
@@ -184,7 +185,9 @@ export default function PricingPage() {
   const [tab, setTab] = useState('services')
 
   return (
-    <div className="pt-32 pb-24">
+    <>
+      <SEO title="Pricing" description="Transparent security pricing from $99/month. Individual services, bundles, and fully managed platform tiers for businesses of every size." path="/pricing" />
+      <div className="pt-32 pb-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         {/* Header */}
         <motion.div initial="hidden" animate="visible" variants={fadeIn}>
@@ -508,5 +511,6 @@ export default function PricingPage() {
         </motion.div>
       </div>
     </div>
+    </>
   )
 }

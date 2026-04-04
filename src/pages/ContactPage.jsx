@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import SEO from '../components/SEO'
 import { Mail, MessageSquare, ArrowRight, Check } from 'lucide-react'
 import { validateSubmission, getFormLoadTime } from '../utils/formProtection'
 
@@ -71,7 +72,9 @@ export default function ContactPage() {
   }
 
   return (
-    <div className="pt-32 pb-24">
+    <>
+      <SEO title="Contact" description="Get started with SeelieSec managed security. Tell us about your organization and security needs." path="/contact" />
+      <div className="pt-32 pb-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="grid gap-16 lg:grid-cols-2">
           {/* Left column — form */}
@@ -239,5 +242,6 @@ export default function ContactPage() {
         </div>
       </div>
     </div>
+    </>
   )
 }

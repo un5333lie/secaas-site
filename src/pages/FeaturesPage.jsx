@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import SEO from '../components/SEO'
 import {
   ArrowRight, Shield, Network, Fingerprint, Code, BarChart3,
   Eye, Brain, Bell, Zap, Lock, Server, Clock, Check
@@ -133,7 +134,9 @@ const features = [
 
 export default function FeaturesPage() {
   return (
-    <div className="pt-32 pb-24">
+    <>
+      <SEO title="Features" description="Enterprise security capabilities: SIEM and log management, endpoint protection, threat intelligence, vulnerability scanning, and AI-powered operations." path="/features" />
+      <div className="pt-32 pb-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         {/* Header */}
         <motion.div initial="hidden" animate="visible" variants={fadeIn}>
@@ -218,5 +221,6 @@ export default function FeaturesPage() {
         </motion.div>
       </div>
     </div>
+    </>
   )
 }
