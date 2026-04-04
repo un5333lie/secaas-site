@@ -391,6 +391,87 @@ export default function PricingPage() {
         )}
 
         {/* ============================================================ */}
+        {/* AI + HUMAN SUPPORT TIERS                                      */}
+        {/* ============================================================ */}
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-60px' }}
+          variants={fadeIn}
+          className="mt-24"
+        >
+          <div className="overflow-hidden rounded-2xl border border-accent-green/20 bg-bg-card">
+            <div className="h-[3px] w-full bg-gradient-to-r from-accent-teal via-accent-green to-accent-teal opacity-60" />
+            <div className="p-6 sm:p-10">
+              <h2 className="font-serif text-2xl font-bold text-text-heading sm:text-3xl">
+                Two Tiers of Support — AI + Human
+              </h2>
+              <p className="mt-4 max-w-2xl text-sm leading-relaxed text-text-secondary">
+                Every service includes AI-powered support through SeelieSec Advisor for
+                day-to-day operations. For complex decisions, incident response, and
+                strategic advisory, our human security experts are available on-demand.
+              </p>
+
+              <div className="mt-8 grid gap-6 sm:grid-cols-2">
+                <div className="rounded-xl border border-accent-teal/20 bg-bg-deep p-6">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Brain className="h-5 w-5 text-accent-teal" strokeWidth={1.5} />
+                    <h3 className="font-serif text-lg font-bold text-text-heading">AI Support</h3>
+                    <span className="ml-auto rounded-full bg-accent-green/10 px-3 py-1 text-xs font-medium text-accent-green-light">Included</span>
+                  </div>
+                  <ul className="space-y-2.5">
+                    {[
+                      'Assessment scoring and gap analysis',
+                      'Compliance policy generation',
+                      'Vulnerability prioritization',
+                      'Alert triage and auto-remediation',
+                      'Threat intelligence briefings',
+                      'Vendor questionnaire review',
+                      'Board-ready security reports',
+                      'Natural language security Q&A — 24/7',
+                    ].map(item => (
+                      <li key={item} className="flex items-start gap-2 text-sm text-text-primary">
+                        <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-accent-teal" strokeWidth={2} />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="rounded-xl border border-accent-green/20 bg-bg-deep p-6">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Shield className="h-5 w-5 text-accent-green-light" strokeWidth={1.5} />
+                    <h3 className="font-serif text-lg font-bold text-text-heading">Human Expert</h3>
+                    <span className="ml-auto rounded-full bg-accent-green/10 px-3 py-1 text-xs font-medium text-accent-green-light">On-Demand</span>
+                  </div>
+                  <ul className="space-y-2.5">
+                    {[
+                      'Incident command for critical events',
+                      'Regulatory and compliance strategy',
+                      'Architecture and design review',
+                      'Red team and penetration testing',
+                      'Board and executive presentations',
+                      'Audit preparation and support',
+                      'Vendor contract negotiation',
+                      'Live training and tabletop exercises',
+                    ].map(item => (
+                      <li key={item} className="flex items-start gap-2 text-sm text-text-primary">
+                        <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-accent-green" strokeWidth={2} />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              <p className="mt-6 text-center text-sm text-text-muted">
+                Most clients use AI support for 90% of their needs and bring in human experts for critical decisions. <Link to="/contact" className="text-accent-green-light hover:underline">Contact us</Link> for human expert pricing.
+              </p>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* ============================================================ */}
         {/* FAQ                                                           */}
         {/* ============================================================ */}
         <motion.div
