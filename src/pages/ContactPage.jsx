@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Mail, MessageSquare, ArrowRight, Check } from 'lucide-react'
+import { validateSubmission, getFormLoadTime } from '../utils/formProtection'
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -32,9 +33,12 @@ const companySizes = [
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false)
+  const [rateLimited, setRateLimited] = useState(false)
   const [formData, setFormData] = useState({
     name: '', email: '', company: '', size: '', interest: '', message: '',
   })
+  const [honeypot, setHoneypot] = useState('')
+  const formLoadTime = useRef(getFormLoadTime())
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -42,6 +46,26 @@ export default function ContactPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+
+    // Anti-abuse validation (honeypot + timing + rate limit)
+    const check = validateSubmission({
+      honeypotValue: honeypot,
+      formLoadTime: formLoadTime.current,
+    })
+
+    if (!check.ok) {
+      if (check.reason === 'rate_limited') {
+        setRateLimited(true)
+        return
+      }
+      // Fake success for bots (honeypot/timing)
+      if (check.fakeSuccess) {
+        setSubmitted(true)
+        return
+      }
+      return
+    }
+
     // TODO: Connect to form backend (Formspree, Netlify Forms, or custom API)
     setSubmitted(true)
   }
@@ -72,8 +96,25 @@ export default function ContactPage() {
                   We'll get back to you within 24 hours. Check your inbox for a confirmation.
                 </p>
               </motion.div>
+            ) : rateLimited ? (
+              <div className="mt-10 rounded-2xl border border-yellow-500/30 bg-bg-card p-8 text-center">
+                <h3 className="font-serif text-xl text-text-heading">Too many submissions</h3>
+                <p className="mt-2 text-sm text-text-secondary">
+                  Please wait a few minutes before submitting again, or email us directly at sales@seeliesecurity.ai.
+                </p>
+              </div>
             ) : (
               <form onSubmit={handleSubmit} className="mt-10 space-y-6">
+                {/* Honeypot — hidden from humans, bots will fill it */}
+                <div className="absolute -left-[9999px]" aria-hidden="true" tabIndex={-1}>
+                  <label htmlFor="_company_url">Website</label>
+                  <input
+                    type="text" id="_company_url" name="_company_url"
+                    value={honeypot} onChange={(e) => setHoneypot(e.target.value)}
+                    autoComplete="off"
+                  />
+                </div>
+
                 <div className="grid gap-6 sm:grid-cols-2">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-text-heading">Name</label>
