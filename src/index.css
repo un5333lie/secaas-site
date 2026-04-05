@@ -12,3 +12,28 @@ body {
   font-family: 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
+
+/* ── Cookie consent — compact sizing (~half default) ── */
+#cc-main {
+  font-size: 0.68rem;
+}
+#cc-main .cm {
+  max-width: 210px !important;
+  padding: 0.85em !important;
+  gap: 0.6em !important;
+}
+#cc-main .cm__title {
+  font-size: 1em;
+  margin-bottom: 0.3em;
+}
+#cc-main .cm__desc {
+  font-size: 0.9em;
+  line-height: 1.4;
+}
+#cc-main .cm__btns {
+  gap: 0.4em !important;
+}
+#cc-main .cm__btn {
+  padding: 0.45em 0.7em !important;
+  font-size: 0.9em;
+}
