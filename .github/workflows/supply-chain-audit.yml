@@ -1,0 +1,136 @@
+name: Supply Chain Security Audit
+
+# Triggers:
+# - Every PR touching dependency files (catch new deps before merge)
+# - Weekly scheduled scan (catch newly disclosed CVEs against existing deps)
+# - Manual dispatch (on-demand audit)
+on:
+  pull_request:
+    paths:
+      - 'package.json'
+      - 'package-lock.json'
+  schedule:
+    # Weekly Monday at 07:13 UTC (off-minute to avoid load spikes)
+    - cron: '13 7 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  # Required for SBOM artifact upload
+  actions: write
+
+jobs:
+  dependency-audit:
+    name: npm Dependency Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      # All actions pinned to commit SHAs per SeelieSec CI/CD hardening policy
+      # (container-scanning-policy.yaml, CI/CD Hardening section)
+      - name: Checkout repository
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6.0.3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e  # v6.4.0
+        with:
+          # Read Node version from .nvmrc (vite 8 requires >=20.19 / >=22.12)
+          node-version-file: '.nvmrc'
+
+      # Install from lock file only — no mutations allowed
+      - name: Install dependencies (locked)
+        run: npm ci
+
+      # Verify lock file was not mutated by npm ci
+      # A mutation indicates the lock file was out of sync with package.json
+      - name: Verify lock file integrity
+        run: |
+          if ! git diff --exit-code package-lock.json; then
+            echo "::error::package-lock.json was modified by npm ci — lock file is out of sync with package.json"
+            exit 1
+          fi
+          echo "Lock file integrity verified — no mutations detected"
+
+      # Audit for known vulnerabilities
+      # Fails the build on high or critical severity findings
+      - name: Run npm audit
+        run: |
+          echo "=== npm audit (high + critical) ==="
+          npm audit --audit-level=high 2>&1 || {
+            EXIT_CODE=$?
+            echo ""
+            echo "::error::npm audit found high or critical vulnerabilities"
+            echo "Run 'npm audit' locally for details and 'npm audit fix' to remediate"
+            exit $EXIT_CODE
+          }
+          echo "No high or critical vulnerabilities found"
+
+      # Generate Software Bill of Materials (SBOM) in CycloneDX format
+      # SBOM tracks every dependency + version for supply chain visibility
+      - name: Generate SBOM
+        run: |
+          npx --yes @cyclonedx/cyclonedx-npm \
+            --output-file sbom.json \
+            --output-format json \
+            --spec-version 1.5
+          echo "SBOM generated: $(python3 -c "import json; d=json.load(open('sbom.json')); print(f'{len(d.get(\"components\",[]))} components')")"
+
+      # Upload SBOM as a build artifact for auditing and compliance
+      - name: Upload SBOM artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        with:
+          name: sbom-${{ github.sha }}
+          path: sbom.json
+          retention-days: 90
+
+      # Full audit report (informational — includes all severities)
+      - name: Full audit report (informational)
+        run: |
+          echo "=== Full dependency audit report ==="
+          npm audit --json 2>/dev/null | python3 -c "
+          import sys, json
+          try:
+              data = json.load(sys.stdin)
+              meta = data.get('metadata', {})
+              vulns = meta.get('vulnerabilities', {})
+              total = meta.get('totalDependencies', '?')
+              print(f'Total dependencies: {total}')
+              print(f'Critical: {vulns.get(\"critical\", 0)}')
+              print(f'High: {vulns.get(\"high\", 0)}')
+              print(f'Moderate: {vulns.get(\"moderate\", 0)}')
+              print(f'Low: {vulns.get(\"low\", 0)}')
+              if vulns.get('critical', 0) + vulns.get('high', 0) == 0:
+                  print('Status: CLEAN')
+              else:
+                  print('Status: VULNERABILITIES FOUND')
+          except:
+              print('Could not parse audit output')
+          " || true
+
+  license-check:
+    name: License Compliance Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6.0.3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e  # v6.4.0
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install dependencies (locked)
+        run: npm ci
+
+      # Check for copyleft / restricted licenses that conflict with SeelieSec's
+      # open-source stack (Apache 2.0 / MIT expected)
+      - name: Check for restricted licenses
+        run: |
+          npx --yes license-checker --summary --failOn "GPL-3.0;AGPL-3.0;SSPL-1.0;BSL-1.1;EUPL-1.2" || {
+            echo "::error::Restricted license detected in dependency tree"
+            echo "Review the dependency and either replace it or get legal approval"
+            exit 1
+          }
+          echo "License check passed — no restricted licenses found"
