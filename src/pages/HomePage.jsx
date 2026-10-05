@@ -136,7 +136,7 @@ export default function HomePage() {
 
             <motion.p
               variants={fadeIn}
-              className="mt-6 text-lg leading-relaxed text-text-secondary sm:text-xl"
+              className="mt-6 text-lg leading-relaxed text-text-secondary sm:text-xl sm:leading-7"
             >
               42 open-source security tools deployed in your cloud, fully managed
               with AI-powered operations. From vulnerability scanning to automated
@@ -199,7 +199,7 @@ export default function HomePage() {
             <h2 className="font-serif text-3xl tracking-tight text-text-heading sm:text-4xl">
               Security shouldn't require a Fortune 500 budget
             </h2>
-            <p className="mt-5 text-base leading-relaxed text-text-secondary sm:text-lg">
+            <p className="mt-5 text-base leading-relaxed text-text-secondary sm:text-lg sm:leading-7">
               Every business faces the same threats. Not every business can afford
               the same defenses. Until now.
             </p>
@@ -285,7 +285,7 @@ export default function HomePage() {
             <h2 className="font-serif text-3xl tracking-tight text-text-heading sm:text-4xl">
               Security that scales with you
             </h2>
-            <p className="mt-5 text-base leading-relaxed text-text-secondary sm:text-lg">
+            <p className="mt-5 text-base leading-relaxed text-text-secondary sm:text-lg sm:leading-7">
               Start with individual services, grow into a managed platform when
               you're ready.
             </p>
@@ -438,7 +438,7 @@ export default function HomePage() {
             <h2 className="font-serif text-3xl tracking-tight text-text-heading sm:text-4xl">
               Ready to secure your organization?
             </h2>
-            <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-text-secondary sm:text-lg">
+            <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-text-secondary sm:text-lg sm:leading-7">
               Start with a single service or deploy the full platform. No long-term
               contracts, no vendor lock-in, no hidden fees.
             </p>
