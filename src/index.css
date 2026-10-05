@@ -1,6 +1,50 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@theme {
+  --font-serif: 'DM Serif Display', Georgia, serif;
+  --font-sans: Inter, system-ui, sans-serif;
+
+  --color-bg-deep: #0a0f0d;
+  --color-bg-section: #0d1310;
+  --color-bg-card: #111916;
+  --color-border-subtle: #1a2820;
+  --color-text-heading: #e8ede9;
+  --color-text-primary: #c5d0c8;
+  --color-text-secondary: #8a9b8f;
+  --color-text-muted: #5a6b5f;
+  --color-accent-green: #5b8a72;
+  --color-accent-green-light: #7ab89a;
+  --color-accent-teal: #4a8a8a;
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+/*
+  Buttons default to `cursor: default` in Tailwind CSS v4; keep the v3
+  pointer cursor.
+*/
+@layer base {
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+}
 
 html {
   scroll-behavior: smooth;
