@@ -264,7 +264,7 @@ export default function PricingPage() {
                     }`}
                   >
                     {bundle.featured && (
-                      <div className="h-[3px] w-full bg-gradient-to-r from-accent-green to-accent-teal absolute top-0 left-0" />
+                      <div className="h-[3px] w-full bg-linear-to-r from-accent-green to-accent-teal absolute top-0 left-0" />
                     )}
                     <div className="flex items-baseline justify-between">
                       <h3 className="font-serif text-xl font-bold text-text-heading">{bundle.name}</h3>
@@ -328,7 +328,7 @@ export default function PricingPage() {
                   }`}
                 >
                   {featured && (
-                    <div className="h-[3px] w-full bg-gradient-to-r from-accent-green to-accent-teal" />
+                    <div className="h-[3px] w-full bg-linear-to-r from-accent-green to-accent-teal" />
                   )}
                   <div className="flex flex-1 flex-col p-6 sm:p-8">
                     <div className="flex items-center justify-between">
@@ -346,13 +346,13 @@ export default function PricingPage() {
                     <ul className="mt-6 flex-1 space-y-2.5">
                       {features.map((f) => (
                         <li key={f} className="flex items-start gap-2 text-sm text-text-primary">
-                          <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-accent-green" strokeWidth={2} />
+                          <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent-green" strokeWidth={2} />
                           {f}
                         </li>
                       ))}
                       {notIncluded.map((f) => (
                         <li key={f} className="flex items-start gap-2 text-sm text-text-muted line-through">
-                          <span className="mt-0.5 h-4 w-4 flex-shrink-0 text-center text-text-muted">-</span>
+                          <span className="mt-0.5 h-4 w-4 shrink-0 text-center text-text-muted">-</span>
                           {f}
                         </li>
                       ))}
@@ -404,7 +404,7 @@ export default function PricingPage() {
           className="mt-24"
         >
           <div className="overflow-hidden rounded-2xl border border-accent-green/20 bg-bg-card">
-            <div className="h-[3px] w-full bg-gradient-to-r from-accent-teal via-accent-green to-accent-teal opacity-60" />
+            <div className="h-[3px] w-full bg-linear-to-r from-accent-teal via-accent-green to-accent-teal opacity-60" />
             <div className="p-6 sm:p-10">
               <h2 className="font-serif text-2xl font-bold text-text-heading sm:text-3xl">
                 Two Tiers of Support — AI + Human
@@ -434,7 +434,7 @@ export default function PricingPage() {
                       'Natural language security Q&A — 24/7',
                     ].map(item => (
                       <li key={item} className="flex items-start gap-2 text-sm text-text-primary">
-                        <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-accent-teal" strokeWidth={2} />
+                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent-teal" strokeWidth={2} />
                         {item}
                       </li>
                     ))}
@@ -459,7 +459,7 @@ export default function PricingPage() {
                       'Live training and tabletop exercises',
                     ].map(item => (
                       <li key={item} className="flex items-start gap-2 text-sm text-text-primary">
-                        <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-accent-green" strokeWidth={2} />
+                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent-green" strokeWidth={2} />
                         {item}
                       </li>
                     ))}

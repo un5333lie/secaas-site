@@ -256,7 +256,7 @@ export default function HomePage() {
             {howItWorks.map(({ step, title, description }) => (
               <motion.div key={step} variants={fadeIn} className="relative">
                 <div className="flex items-start gap-4">
-                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-accent-green/20 font-serif text-lg font-bold text-accent-green-light">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent-green/20 font-serif text-lg font-bold text-accent-green-light">
                     {step}
                   </div>
                   <div>
@@ -308,7 +308,7 @@ export default function HomePage() {
                     : 'border-border-subtle hover:border-accent-green/30'
                 } bg-bg-card`}
               >
-                <div className={`h-[3px] w-full bg-gradient-to-r from-accent-green to-accent-teal ${featured ? 'opacity-100' : 'opacity-40 group-hover:opacity-80'} transition-opacity duration-500`} />
+                <div className={`h-[3px] w-full bg-linear-to-r from-accent-green to-accent-teal ${featured ? 'opacity-100' : 'opacity-40 group-hover:opacity-80'} transition-opacity duration-500`} />
                 <div className="flex flex-1 flex-col p-6 sm:p-8">
                   <div className="flex items-center justify-between">
                     <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-green/10 px-3 py-1 text-xs font-medium text-accent-green-light">
@@ -349,7 +349,7 @@ export default function HomePage() {
             variants={fadeIn}
             className="overflow-hidden rounded-2xl border border-accent-green/20 bg-bg-card"
           >
-            <div className="h-[3px] w-full bg-gradient-to-r from-accent-teal via-accent-green to-accent-teal opacity-60" />
+            <div className="h-[3px] w-full bg-linear-to-r from-accent-teal via-accent-green to-accent-teal opacity-60" />
             <div className="p-8 sm:p-12 lg:flex lg:items-center lg:gap-16">
               <div className="flex-1">
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-teal/10 px-3 py-1 text-xs font-medium text-accent-teal">
@@ -388,7 +388,7 @@ export default function HomePage() {
                     'Natural language security Q&A — 24/7',
                   ].map((feature) => (
                     <div key={feature} className="flex items-start gap-2.5 text-sm text-text-primary">
-                      <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-accent-teal" strokeWidth={2} />
+                      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-accent-teal" strokeWidth={2} />
                       {feature}
                     </div>
                   ))}

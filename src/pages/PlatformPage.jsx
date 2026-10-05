@@ -125,7 +125,7 @@ export default function PlatformPage() {
               className="group rounded-2xl border border-border-subtle bg-bg-card p-6 sm:p-8 transition-all duration-300 hover:border-accent-green/20"
             >
               <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-10">
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                   <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${bg}`}>
                     <Icon className={`h-6 w-6 ${color}`} strokeWidth={1.5} />
                   </div>
