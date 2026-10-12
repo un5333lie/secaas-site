@@ -4,6 +4,8 @@ import SEO from '../components/SEO'
 import { Mail, MessageSquare, ArrowRight, Check } from 'lucide-react'
 import { validateSubmission, getFormLoadTime } from '../utils/formProtection'
 
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mpqyyzkn'
+
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] } },
@@ -35,6 +37,8 @@ const companySizes = [
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false)
   const [rateLimited, setRateLimited] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [errorMsg, setErrorMsg] = useState('')
   const [formData, setFormData] = useState({
     name: '', email: '', company: '', size: '', interest: '', message: '',
   })
@@ -67,8 +71,31 @@ export default function ContactPage() {
       return
     }
 
-    // TODO: Connect to form backend (Formspree, Netlify Forms, or custom API)
-    setSubmitted(true)
+    setErrorMsg('')
+    setSending(true)
+
+    // Same Formspree form as seeliesecurity.ai, so inquiries land in the
+    // shared Hello@ inbox; _subject and source mark them as SecaaS leads
+    fetch(FORMSPREE_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({
+        ...formData,
+        source: 'secaas.seeliesecurity.ai',
+        _subject: `SecaaS inquiry from ${formData.name}`,
+      }),
+    })
+      .then((res) => {
+        if (res.ok) {
+          setSubmitted(true)
+        } else {
+          setErrorMsg('Something went wrong. Please try again or email us at hello@seeliesecurity.ai.')
+        }
+      })
+      .catch(() => {
+        setErrorMsg('Network error. Please try again or email us at hello@seeliesecurity.ai.')
+      })
+      .finally(() => setSending(false))
   }
 
   return (
@@ -96,14 +123,14 @@ export default function ContactPage() {
                 </div>
                 <h3 className="mt-4 font-serif text-xl text-text-heading">Message sent!</h3>
                 <p className="mt-2 text-sm text-text-secondary">
-                  We'll get back to you within 24 hours. Check your inbox for a confirmation.
+                  We'll get back to you within 24 hours.
                 </p>
               </motion.div>
             ) : rateLimited ? (
               <div className="mt-10 rounded-2xl border border-yellow-500/30 bg-bg-card p-8 text-center">
                 <h3 className="font-serif text-xl text-text-heading">Too many submissions</h3>
                 <p className="mt-2 text-sm text-text-secondary">
-                  Please wait a few minutes before submitting again, or email us directly at sales@seeliesecurity.ai.
+                  Please wait a few minutes before submitting again, or email us directly at hello@seeliesecurity.ai.
                 </p>
               </div>
             ) : (
@@ -184,11 +211,16 @@ export default function ContactPage() {
                   />
                 </div>
 
+                {errorMsg && (
+                  <p role="alert" className="text-sm text-red-400">{errorMsg}</p>
+                )}
+
                 <button
                   type="submit"
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-accent-green px-6 py-4 text-base font-semibold text-bg-deep hover:bg-accent-green-light transition-all duration-300 hover:shadow-lg hover:shadow-accent-green/20"
+                  disabled={sending}
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-accent-green px-6 py-4 text-base font-semibold text-bg-deep hover:bg-accent-green-light transition-all duration-300 hover:shadow-lg hover:shadow-accent-green/20 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  Send Message <ArrowRight className="h-4 w-4" />
+                  {sending ? 'Sending…' : <>Send Message <ArrowRight className="h-4 w-4" /></>}
                 </button>
               </form>
             )}
