@@ -57,6 +57,35 @@ jobs:
             echo "::warning::Slow response time: ${RESPONSE_TIME}s (threshold: 5s)"
           fi
 
+      # / is served straight from the filesystem, so it stays up even when the
+      # SPA rewrite is broken (as cleanUrls did, see #21). A deep route only
+      # works if the rewrite to index.html resolves.
+      - name: Check SPA deep route is reachable
+        run: |
+          echo "=== Deep Route Check: /contact ==="
+
+          ATTEMPTS=3
+          HTTP_CODE="000"
+          for i in $(seq 1 "$ATTEMPTS"); do
+            HTTP_CODE=$(curl -sL -o /dev/null -w "%{http_code}" --max-time 10 https://secaas.seeliesecurity.ai/contact || echo "000")
+
+            if [ "$HTTP_CODE" -eq 200 ]; then
+              break
+            fi
+
+            if [ "$i" -lt "$ATTEMPTS" ]; then
+              echo "Attempt $i/$ATTEMPTS got HTTP $HTTP_CODE — retrying in 5s..."
+              sleep 5
+            fi
+          done
+
+          if [ "$HTTP_CODE" -ne 200 ]; then
+            echo "::error::/contact returned HTTP $HTTP_CODE after $ATTEMPTS attempts — SPA routing is broken"
+            exit 1
+          fi
+
+          echo "✅ /contact HTTP $HTTP_CODE"
+
       - name: Check TLS certificate expiry
         run: |
           echo "=== TLS Certificate Check ==="
