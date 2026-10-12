@@ -1,0 +1,121 @@
+name: Uptime & TLS Certificate Monitor
+
+# Free-tier uptime and TLS monitoring via GitHub Actions
+# No infrastructure needed — runs as a scheduled workflow
+# Checks: site reachable, response time, TLS cert expiry, security headers
+on:
+  schedule:
+    # Every 30 minutes, offset from high-load top-of-hour scheduling and
+    # from the seeliesec-index monitor (:17/:47)
+    - cron: '23,53 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  uptime-check:
+    name: Site Health Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Check site is reachable
+        id: health
+        run: |
+          echo "=== Uptime Check: secaas.seeliesecurity.ai ==="
+
+          ATTEMPTS=3
+          HTTP_CODE="000"
+          for i in $(seq 1 "$ATTEMPTS"); do
+            HTTP_CODE=$(curl -sL -o /dev/null -w "%{http_code}" --max-time 10 https://secaas.seeliesecurity.ai || echo "000")
+
+            if [ "$HTTP_CODE" -eq 200 ] || [ "$HTTP_CODE" -eq 301 ] || [ "$HTTP_CODE" -eq 302 ]; then
+              break
+            fi
+
+            if [ "$i" -lt "$ATTEMPTS" ]; then
+              echo "Attempt $i/$ATTEMPTS got HTTP $HTTP_CODE — retrying in 5s..."
+              sleep 5
+            fi
+          done
+
+          RESPONSE_TIME=$(curl -sL -o /dev/null -w "%{time_total}" --max-time 10 https://secaas.seeliesecurity.ai || echo "0")
+
+          echo "http_code=$HTTP_CODE" >> $GITHUB_OUTPUT
+          echo "response_time=$RESPONSE_TIME" >> $GITHUB_OUTPUT
+
+          if [ "$HTTP_CODE" -ne 200 ] && [ "$HTTP_CODE" -ne 301 ] && [ "$HTTP_CODE" -ne 302 ]; then
+            echo "::error::Site returned HTTP $HTTP_CODE after $ATTEMPTS attempts"
+            exit 1
+          fi
+
+          echo "HTTP $HTTP_CODE — Response time: ${RESPONSE_TIME}s"
+
+          # Alert if response time > 5 seconds
+          if (( $(echo "$RESPONSE_TIME > 5.0" | bc -l) )); then
+            echo "::warning::Slow response time: ${RESPONSE_TIME}s (threshold: 5s)"
+          fi
+
+      - name: Check TLS certificate expiry
+        run: |
+          echo "=== TLS Certificate Check ==="
+          EXPIRY=$(echo | openssl s_client -servername secaas.seeliesecurity.ai -connect secaas.seeliesecurity.ai:443 2>/dev/null | openssl x509 -noout -enddate 2>/dev/null | cut -d= -f2)
+
+          if [ -z "$EXPIRY" ]; then
+            echo "::error::Could not retrieve TLS certificate"
+            exit 1
+          fi
+
+          EXPIRY_EPOCH=$(date -d "$EXPIRY" +%s 2>/dev/null || date -j -f "%b %d %T %Y %Z" "$EXPIRY" +%s 2>/dev/null)
+          NOW_EPOCH=$(date +%s)
+          DAYS_LEFT=$(( (EXPIRY_EPOCH - NOW_EPOCH) / 86400 ))
+
+          echo "Certificate expires: $EXPIRY ($DAYS_LEFT days remaining)"
+
+          if [ "$DAYS_LEFT" -lt 7 ]; then
+            echo "::error::TLS certificate expires in $DAYS_LEFT days — CRITICAL"
+            exit 1
+          elif [ "$DAYS_LEFT" -lt 30 ]; then
+            echo "::warning::TLS certificate expires in $DAYS_LEFT days — renew soon"
+          else
+            echo "TLS certificate OK — $DAYS_LEFT days remaining"
+          fi
+
+      - name: Check security headers
+        run: |
+          echo "=== Security Headers Check ==="
+          HEADERS=$(curl -sIL https://secaas.seeliesecurity.ai)
+
+          check_header() {
+            if echo "$HEADERS" | grep -qi "$1"; then
+              echo "  ✅ $1"
+            else
+              echo "  ❌ $1 — MISSING"
+              MISSING=1
+            fi
+          }
+
+          MISSING=0
+          check_header "x-content-type-options"
+          check_header "x-frame-options"
+          check_header "referrer-policy"
+          check_header "strict-transport-security"
+          check_header "permissions-policy"
+          check_header "content-security-policy"
+          check_header "cross-origin-opener-policy"
+          check_header "cross-origin-embedder-policy"
+          check_header "cross-origin-resource-policy"
+
+          if [ "$MISSING" -eq 1 ]; then
+            echo "::warning::One or more security headers missing"
+          fi
+
+      - name: Check robots.txt exists
+        run: |
+          HTTP_CODE=$(curl -sL -o /dev/null -w "%{http_code}" https://secaas.seeliesecurity.ai/robots.txt)
+          if [ "$HTTP_CODE" -eq 200 ]; then
+            echo "✅ robots.txt accessible"
+          else
+            echo "::warning::robots.txt returned HTTP $HTTP_CODE"
+          fi
