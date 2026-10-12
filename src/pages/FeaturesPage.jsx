@@ -159,7 +159,7 @@ export default function FeaturesPage() {
             >
               {/* Section header */}
               <motion.div variants={fadeIn} className="flex items-start gap-4">
-                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-accent-green/10">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent-green/10">
                   <Icon className="h-6 w-6 text-accent-green-light" strokeWidth={1.5} />
                 </div>
                 <div>
@@ -188,7 +188,7 @@ export default function FeaturesPage() {
                     variants={fadeIn}
                     className="flex items-start gap-3 text-sm leading-relaxed text-text-primary"
                   >
-                    <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-accent-green" strokeWidth={2} />
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent-green" strokeWidth={2} />
                     {cap}
                   </motion.li>
                 ))}

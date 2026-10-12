@@ -109,7 +109,7 @@ export default function ContactPage() {
             ) : (
               <form onSubmit={handleSubmit} className="mt-10 space-y-6">
                 {/* Honeypot — hidden from humans, bots will fill it */}
-                <div className="absolute -left-[9999px]" aria-hidden="true" tabIndex={-1}>
+                <div className="absolute left-[-9999px]" aria-hidden="true" tabIndex={-1}>
                   <label htmlFor="_company_url">Website</label>
                   <input
                     type="text" id="_company_url" name="_company_url"
@@ -124,7 +124,7 @@ export default function ContactPage() {
                     <input
                       type="text" id="name" name="name" required
                       value={formData.name} onChange={handleChange}
-                      className="mt-2 w-full rounded-lg border border-border-subtle bg-bg-card px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:border-accent-green focus:outline-none focus:ring-1 focus:ring-accent-green"
+                      className="mt-2 w-full rounded-lg border border-border-subtle bg-bg-card px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:border-accent-green focus:outline-hidden focus:ring-1 focus:ring-accent-green"
                       placeholder="Your name"
                     />
                   </div>
@@ -133,7 +133,7 @@ export default function ContactPage() {
                     <input
                       type="email" id="email" name="email" required
                       value={formData.email} onChange={handleChange}
-                      className="mt-2 w-full rounded-lg border border-border-subtle bg-bg-card px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:border-accent-green focus:outline-none focus:ring-1 focus:ring-accent-green"
+                      className="mt-2 w-full rounded-lg border border-border-subtle bg-bg-card px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:border-accent-green focus:outline-hidden focus:ring-1 focus:ring-accent-green"
                       placeholder="you@company.com"
                     />
                   </div>
@@ -145,7 +145,7 @@ export default function ContactPage() {
                     <input
                       type="text" id="company" name="company"
                       value={formData.company} onChange={handleChange}
-                      className="mt-2 w-full rounded-lg border border-border-subtle bg-bg-card px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:border-accent-green focus:outline-none focus:ring-1 focus:ring-accent-green"
+                      className="mt-2 w-full rounded-lg border border-border-subtle bg-bg-card px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:border-accent-green focus:outline-hidden focus:ring-1 focus:ring-accent-green"
                       placeholder="Company name"
                     />
                   </div>
@@ -154,7 +154,7 @@ export default function ContactPage() {
                     <select
                       id="size" name="size"
                       value={formData.size} onChange={handleChange}
-                      className="mt-2 w-full rounded-lg border border-border-subtle bg-bg-card px-4 py-3 text-sm text-text-primary focus:border-accent-green focus:outline-none focus:ring-1 focus:ring-accent-green"
+                      className="mt-2 w-full rounded-lg border border-border-subtle bg-bg-card px-4 py-3 text-sm text-text-primary focus:border-accent-green focus:outline-hidden focus:ring-1 focus:ring-accent-green"
                     >
                       <option value="">Select size</option>
                       {companySizes.map(s => <option key={s} value={s}>{s}</option>)}
@@ -167,7 +167,7 @@ export default function ContactPage() {
                   <select
                     id="interest" name="interest"
                     value={formData.interest} onChange={handleChange}
-                    className="mt-2 w-full rounded-lg border border-border-subtle bg-bg-card px-4 py-3 text-sm text-text-primary focus:border-accent-green focus:outline-none focus:ring-1 focus:ring-accent-green"
+                    className="mt-2 w-full rounded-lg border border-border-subtle bg-bg-card px-4 py-3 text-sm text-text-primary focus:border-accent-green focus:outline-hidden focus:ring-1 focus:ring-accent-green"
                   >
                     <option value="">Select an option</option>
                     {interests.map(i => <option key={i} value={i}>{i}</option>)}
@@ -179,7 +179,7 @@ export default function ContactPage() {
                   <textarea
                     id="message" name="message" rows={4}
                     value={formData.message} onChange={handleChange}
-                    className="mt-2 w-full rounded-lg border border-border-subtle bg-bg-card px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:border-accent-green focus:outline-none focus:ring-1 focus:ring-accent-green resize-none"
+                    className="mt-2 w-full rounded-lg border border-border-subtle bg-bg-card px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:border-accent-green focus:outline-hidden focus:ring-1 focus:ring-accent-green resize-none"
                     placeholder="Tell us about your security needs, compliance requirements, or any questions..."
                   />
                 </div>
