@@ -1,0 +1,35 @@
+name: DAST Security Scan (OWASP ZAP)
+
+# Scans the live secaas.seeliesecurity.ai site for web vulnerabilities
+# Runs weekly + on-demand. No infrastructure needed — runs in GitHub Actions.
+on:
+  schedule:
+    # Weekly Wednesday at 06:47 UTC (off-minute to avoid load spikes, and
+    # 30 min after the seeliesec-index scan so the two never overlap)
+    - cron: '47 6 * * 3'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write  # To create issues for findings
+
+jobs:
+  zap-scan:
+    name: OWASP ZAP Baseline Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      # SHA-pinned per SeelieSec CI/CD hardening policy
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+
+      - name: Run ZAP Baseline Scan
+        uses: zaproxy/action-baseline@de8ad967d3548d44ef623df22cf95c3b0baf8b25  # v0.15.0
+        with:
+          target: 'https://secaas.seeliesecurity.ai'
+          rules_file_name: '.zap-rules.tsv'
+          cmd_options: '-a'  # Include alpha rules
+          issue_title: 'DAST: ZAP Baseline Scan Report'
+          fail_action: 'false'  # Don't fail workflow — create issue instead
+          allow_issue_writing: 'true'
